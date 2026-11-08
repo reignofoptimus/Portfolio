@@ -48,7 +48,6 @@
       precision highp float;
       uniform vec2 u_resolution;
       uniform float u_time;
-      uniform float u_theme;
 
       mat2 rot(float a) {
         float s = sin(a), c = cos(a);
@@ -80,7 +79,7 @@
         float radius = intensity * 0.44; 
         float dot_mask = smoothstep(radius, radius - 0.12, dist);
 
-        // --- DARK MODE PALETTE: Haute Burgundy Velvet ---
+        // --- HAUTE BURGUNDY VELVET ---
         // Deep obsidian-noir wine base (#080204)
         vec3 dark_bg = vec3(0.031, 0.008, 0.016);
         // Rich Bordeaux burgundy wine (#7d0f2b)
@@ -91,24 +90,8 @@
         vec3 dark_fluid = mix(dark_bg, dark_wine, smoothstep(0.18, 0.62, intensity));
         dark_fluid = mix(dark_fluid, dark_ruby, smoothstep(0.68, 1.0, intensity));
         
-        vec3 dark_final = mix(dark_bg, dark_fluid, dot_mask);
-        dark_final += dark_fluid * 0.16;
-
-        // --- LIGHT MODE PALETTE: Champagne Silk & Rose Wine ---
-        // Ivory champagne silk base (#fbf7f8)
-        vec3 light_bg = vec3(0.984, 0.968, 0.973);
-        // Delicate soft rose silk (#dfc2cb)
-        vec3 light_rose = vec3(0.87, 0.74, 0.79);
-        // Deep Bordeaux ink dots (#700d24)
-        vec3 light_wine = vec3(0.44, 0.05, 0.14);
-
-        vec3 light_fluid = mix(light_bg, light_rose, smoothstep(0.2, 0.65, intensity));
-        light_fluid = mix(light_fluid, light_wine, smoothstep(0.7, 1.0, intensity));
-
-        vec3 light_final = mix(light_bg, light_fluid, dot_mask * 0.75);
-
-        // Smooth transition between themes
-        vec3 final_color = mix(light_final, dark_final, u_theme);
+        vec3 final_color = mix(dark_bg, dark_fluid, dot_mask);
+        final_color += dark_fluid * 0.16;
 
         gl_FragColor = vec4(final_color, 1.0);
       }
