@@ -126,11 +126,11 @@
     }
 
     function getBgColor() {
-      return isDarkMode() ? '#0a0a0a' : '#fafafa';
+      return isDarkMode() ? '#030704' : '#f6f9f7';
     }
 
     function getFadeFill() {
-      return isDarkMode() ? 'rgba(10, 10, 10, 0.03)' : 'rgba(250, 250, 250, 0.045)';
+      return isDarkMode() ? 'rgba(3, 7, 4, 0.036)' : 'rgba(246, 249, 247, 0.045)';
     }
 
     function resize() {
@@ -206,24 +206,21 @@
       };
     }
 
-    // Color palette — warm tones: amber, gold, coral, with variations
+    // Bespoke Haute Luxury Dark Green & Royal Emerald Palette
     const basePalette = [
-      { r: 200, g: 149, b: 108 }, // amber  #c8956c
-      { r: 212, g: 165, b: 116 }, // gold   #d4a574
-      { r: 224, g: 120, b: 80  }, // coral  #e07850
-      { r: 190, g: 130, b: 90  }, // dark amber
-      { r: 230, g: 180, b: 140 }, // light gold
-      { r: 210, g: 100, b: 70  }, // deep coral
-      { r: 180, g: 160, b: 120 }, // muted gold
+      { r: 2,  g: 30,  b: 18  }, // deep velvet cypress black-green
+      { r: 4,  g: 50,  b: 30  }, // imperial dark forest
+      { r: 6,  g: 74,  b: 46  }, // deep british racing green
+      { r: 10, g: 104, b: 64  }, // rich dark emerald jade
+      { r: 16, g: 148, b: 92  }, // radiant royal emerald
+      { r: 34, g: 198, b: 124 }, // luminous emerald crest
+      { r: 76, g: 226, b: 156 }  // silk mint filament highlight
     ];
 
-    // Double saturation configuration & dynamic hue cycling (-180 to 180 at 20 deg/sec)
-    let SAT_MULT = 2.0;
-    let HUE_SPEED = 20;
-    let currentHue = -180;
-    let lastTime = performance.now();
+    // Fixed dark green hue — locked in bespoke emerald/forest spectrum
+    let SAT_MULT = 1.6;
 
-    // Precompute HSL with doubled saturation
+    // Precompute HSL with luxury saturation
     const basePaletteHSL = basePalette.map(c => {
       const [h, s, l] = rgbToHsl(c.r, c.g, c.b);
       return { h, s: Math.min(1.0, s * SAT_MULT), l };
@@ -235,10 +232,9 @@
       const dark = isDarkMode();
       for (let i = 0; i < basePaletteHSL.length; i++) {
         const entry = basePaletteHSL[i];
-        // In dark mode: l is bright glowing filament (entry.l ~ 0.55-0.65)
-        // In light mode: l is deep rich jewel tone (targetL ~ 0.30-0.42) so it contrasts clearly against #fafafa
-        const targetL = dark ? entry.l : Math.max(0.30, Math.min(0.42, entry.l * 0.60));
-        const targetS = dark ? entry.s : Math.min(1.0, entry.s * 1.15);
+        // In dark mode: entry.l is calibrated for luminous silk filaments against deep obsidian velvet
+        const targetL = dark ? Math.max(0.24, Math.min(0.68, entry.l)) : Math.max(0.22, Math.min(0.38, entry.l * 0.52));
+        const targetS = dark ? Math.min(1.0, entry.s * 1.05) : Math.min(1.0, entry.s * 1.25);
         const rgb = hslToRgb(entry.h + hueShift, targetS, targetL);
         palette[i].r = rgb.r;
         palette[i].g = rgb.g;
@@ -246,7 +242,8 @@
       }
     }
 
-    updatePalette(currentHue);
+    // Initialize locked into dark green (0 hue shift)
+    updatePalette(0);
 
     function lerpColor(a, b, t) {
       return {
@@ -300,18 +297,9 @@
 
       time += 0.0008;
 
-      // Toggle / cycle hue from -180 to 180 at 20 deg/sec
-      const now = performance.now();
-      const dt = Math.min((now - lastTime) / 1000, 0.1);
-      lastTime = now;
-
-      currentHue += HUE_SPEED * dt;
-      if (currentHue > 180) {
-        currentHue -= 360;
-      }
-
-      // Update active palette with current hue shift and doubled saturation
-      updatePalette(currentHue);
+      // Fixed Dark Green Hue — subtle micro-undulation for organic silk breathing without color shifting
+      const greenBreathing = Math.sin(time * 0.6) * 1.5;
+      updatePalette(greenBreathing);
 
       const dark = isDarkMode();
       for (let i = 0; i < PARTICLE_COUNT; i++) {
@@ -378,10 +366,9 @@
     // Immediate reaction to theme toggle
     window.addEventListener('themechange', function(e) {
       if (e.detail && e.detail.theme) {
-        const dark = e.detail.theme === 'dark';
-        ctx.fillStyle = dark ? '#0a0a0a' : '#fafafa';
+        ctx.fillStyle = getBgColor();
         ctx.fillRect(0, 0, W, H);
-        updatePalette(currentHue);
+        updatePalette(0);
       }
     });
 
@@ -645,14 +632,33 @@
   // ——————————————————————————————————————————————
 
   function animateHero() {
+    const badge = document.querySelector('.luxury-badge');
     const name = document.querySelector('.hero-name');
-    if (!name) return;
+    const subline = document.querySelector('.hero-subline');
 
-    setTimeout(() => {
-      name.style.transition = 'opacity 1s cubic-bezier(0.4, 0, 0.2, 1), transform 1s cubic-bezier(0.4, 0, 0.2, 1)';
-      name.style.opacity = '1';
-      name.style.transform = 'translateY(0)';
-    }, 300);
+    if (badge) {
+      setTimeout(() => {
+        badge.style.transition = 'opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1)';
+        badge.style.opacity = '1';
+        badge.style.transform = 'translateY(0)';
+      }, 200);
+    }
+
+    if (name) {
+      setTimeout(() => {
+        name.style.transition = 'opacity 1s cubic-bezier(0.16, 1, 0.3, 1), transform 1s cubic-bezier(0.16, 1, 0.3, 1)';
+        name.style.opacity = '1';
+        name.style.transform = 'translateY(0)';
+      }, 400);
+    }
+
+    if (subline) {
+      setTimeout(() => {
+        subline.style.transition = 'opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1), transform 0.9s cubic-bezier(0.16, 1, 0.3, 1)';
+        subline.style.opacity = '1';
+        subline.style.transform = 'translateY(0)';
+      }, 650);
+    }
   }
 
   // ——————————————————————————————————————————————
