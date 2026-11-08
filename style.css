@@ -715,48 +715,12 @@ section {
   align-items: center;
 }
 
-.luxury-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  padding: 7px 18px;
-  border-radius: 9999px;
-  background: var(--luxury-emerald-pill);
-  border: 1px solid var(--border-color);
-  font-family: var(--font-heading);
-  font-size: 0.76rem;
-  font-weight: 600;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--luxury-emerald);
-  margin-bottom: 28px;
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.08);
-  opacity: 0;
-  transform: translateY(20px);
-}
-
-.luxury-badge-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: var(--luxury-emerald);
-  box-shadow: 0 0 12px var(--luxury-emerald);
-  animation: pulseGlow 2.5s infinite ease-in-out;
-}
-
-@keyframes pulseGlow {
-  0%, 100% { opacity: 1; transform: scale(1); box-shadow: 0 0 12px var(--luxury-emerald); }
-  50% { opacity: 0.35; transform: scale(0.8); box-shadow: 0 0 4px var(--luxury-emerald); }
-}
-
 .hero-name {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 0;
-  margin-bottom: 24px;
+  margin-bottom: 0;
   opacity: 0;
   transform: translateY(30px);
 }
@@ -778,18 +742,6 @@ section {
 
 .hero-name-last {
   font-size: clamp(5.2rem, 16vw, 14.5rem);
-}
-
-.hero-subline {
-  max-width: 640px;
-  font-size: clamp(1rem, 1.4vw, 1.22rem);
-  line-height: 1.65;
-  color: var(--text-secondary);
-  font-weight: 400;
-  letter-spacing: -0.01em;
-  margin-bottom: 32px;
-  opacity: 0;
-  transform: translateY(20px);
 }
 
 .hero-scroll-indicator {
@@ -989,233 +941,169 @@ section {
 }
 
 /* ============================================================
-   HOVER EXPAND LIST — Interactive Text Reveal (Replaces Accordion)
+   ACCORDION LIST — Education & Experience
    ============================================================ */
 
-.hover-expand-list {
+.accordion-list {
   display: flex;
   flex-direction: column;
+  gap: 1px;
+  background: var(--border-color);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
+  transition: background var(--transition-medium), border-color var(--transition-medium);
+}
+
+.accordion-item {
+  background: var(--bg-card);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  transition: background var(--transition-medium);
+}
+
+.accordion-header {
   width: 100%;
-  border-top: 1px solid var(--border-color);
-  border-bottom: 1px solid var(--border-color);
-  position: relative;
-  isolation: isolate;
-  margin-top: 10px;
-}
-
-.hover-expand-item {
-  position: relative;
-  width: 100%;
-  border-bottom: 1px solid var(--border-color);
-  outline: none;
-  cursor: pointer;
-  border-radius: 12px;
-  margin: 2px 0;
-  transition: opacity 0.25s cubic-bezier(0.2, 0.9, 0.25, 1),
-              background 0.35s ease,
-              border-color var(--transition-medium);
-}
-
-/* Sibling dimming when hovering the list (matches React HoverExpand behavior) */
-@media (hover: hover) {
-  .hover-expand-list:hover .hover-expand-item {
-    opacity: 0.55;
-  }
-
-  .hover-expand-list .hover-expand-item:hover {
-    opacity: 1 !important;
-    background: color-mix(in srgb, var(--bg-card) 75%, transparent);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-  }
-}
-
-.hover-expand-item.is-expanded {
-  opacity: 1 !important;
-  background: color-mix(in srgb, var(--bg-card) 85%, transparent);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-}
-
-.hover-expand-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 24px 20px;
+  padding: 26px 30px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+  font-family: inherit;
+  color: inherit;
   gap: 20px;
-  min-height: 72px;
-  transition: padding 0.3s ease;
+  transition: background var(--transition-fast);
 }
 
-.hover-expand-main {
-  display: flex;
-  align-items: baseline;
-  gap: 16px;
-  min-width: 0;
+.accordion-header:hover {
+  background: var(--bg-card-hover);
+}
+
+.accordion-header-content {
   flex: 1;
+  min-width: 0;
 }
 
-.hover-expand-num {
-  font-family: var(--font-heading);
-  font-size: 0.85rem;
-  font-weight: 600;
-  letter-spacing: 0.05em;
-  font-variant-numeric: tabular-nums;
-  color: var(--expand-num);
-  opacity: 0.9;
-  flex-shrink: 0;
-  transition: opacity 0.25s ease, color 0.25s ease;
-}
-
-.hover-expand-item:hover .hover-expand-num,
-.hover-expand-item.is-expanded .hover-expand-num {
-  opacity: 1;
-  color: var(--expand-sublabel);
-}
-
-.hover-expand-label {
-  font-family: var(--font-heading);
-  font-size: clamp(1.1rem, 2vw, 1.4rem);
-  font-weight: 600;
-  letter-spacing: -0.015em;
-  color: var(--text-primary);
-  line-height: 1.25;
-  transition: transform 0.3s cubic-bezier(0.2, 0.9, 0.25, 1);
-}
-
-.hover-expand-item:hover .hover-expand-label,
-.hover-expand-item.is-expanded .hover-expand-label {
-  transform: translateX(4px);
-}
-
-.hover-expand-meta {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  flex-shrink: 0;
-}
-
-.hover-expand-sublabel {
-  font-size: 0.8rem;
+.accordion-meta {
+  font-size: 0.78rem;
   font-weight: 600;
   letter-spacing: 0.08em;
+  color: var(--accent-light, #34d399);
+  margin-bottom: 6px;
   text-transform: uppercase;
-  color: var(--expand-sublabel);
-  opacity: 1;
-  transition: opacity 0.25s ease, color 0.25s ease;
-  white-space: nowrap;
 }
 
-.hover-expand-item:hover .hover-expand-sublabel,
-.hover-expand-item.is-expanded .hover-expand-sublabel {
-  opacity: 1;
-  color: var(--expand-sublabel);
+[data-theme="light"] .accordion-meta {
+  color: var(--accent-primary);
 }
 
-.hover-expand-arrow {
-  font-size: 1.05rem;
+.accordion-title {
+  font-family: var(--font-heading);
+  font-size: 1.18rem;
   font-weight: 600;
-  color: var(--expand-arrow);
-  opacity: 1;
-  transition: transform 0.35s cubic-bezier(0.2, 0.9, 0.25, 1),
-              color 0.25s ease;
-  display: inline-block;
+  color: var(--text-primary);
+  letter-spacing: -0.015em;
+  line-height: 1.3;
+  margin-bottom: 3px;
+  transition: color var(--transition-fast);
 }
 
-.hover-expand-item:hover .hover-expand-arrow,
-.hover-expand-item.is-expanded .hover-expand-arrow {
-  transform: translateX(4px) rotate(45deg);
-  color: var(--expand-arrow);
-  opacity: 1;
-}
-
-/* Expanding reveal zone (no image — text reveal only) */
-.hover-expand-reveal {
-  display: grid;
-  grid-template-rows: 0fr;
-  transition: grid-template-rows 0.42s cubic-bezier(0.2, 0.9, 0.25, 1);
-}
-
-.hover-expand-item:hover .hover-expand-reveal,
-.hover-expand-item.is-expanded .hover-expand-reveal {
-  grid-template-rows: 1fr;
-}
-
-.hover-expand-content {
-  overflow: hidden;
-  opacity: 0;
-  transform: translateY(10px);
-  transition: opacity 0.3s cubic-bezier(0.23, 1, 0.32, 1),
-              transform 0.4s cubic-bezier(0.23, 1, 0.32, 1);
-  padding: 0 20px 24px calc(20px + 16px + 18px);
-}
-
-.hover-expand-item:hover .hover-expand-content,
-.hover-expand-item.is-expanded .hover-expand-content {
-  opacity: 1;
-  transform: translateY(0);
-  transition-delay: 0.08s;
-}
-
-.hover-expand-sub {
+.accordion-subtitle {
   font-size: 0.92rem;
-  font-weight: 600;
   color: var(--text-secondary);
-  margin-bottom: 8px;
+  font-weight: 400;
+}
+
+.accordion-icon {
+  font-family: var(--font-heading);
+  font-size: 1.35rem;
+  font-weight: 300;
+  color: var(--text-muted);
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
   display: flex;
   align-items: center;
-  gap: 8px;
+  justify-content: center;
+  border-radius: 50%;
+  border: 1px solid var(--border-color);
+  background: color-mix(in srgb, var(--bg-primary) 40%, transparent);
+  transition: transform 0.35s cubic-bezier(0.2, 0.9, 0.25, 1),
+              color var(--transition-fast),
+              border-color var(--transition-fast),
+              background var(--transition-fast);
 }
 
-.hover-expand-sub::before {
-  content: '—';
-  color: var(--expand-sublabel);
-}
-
-.hover-expand-desc {
-  font-size: 0.95rem;
+.accordion-header:hover .accordion-icon {
   color: var(--text-primary);
-  opacity: 0.9;
+  border-color: var(--accent-border);
+}
+
+.accordion-item.active .accordion-icon {
+  transform: rotate(45deg);
+  color: #fff;
+  background: var(--accent-primary);
+  border-color: var(--accent-primary);
+}
+
+.accordion-body {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.45s cubic-bezier(0.2, 0.9, 0.25, 1),
+              padding 0.45s cubic-bezier(0.2, 0.9, 0.25, 1);
+  padding: 0 30px;
+}
+
+.accordion-item.active .accordion-body {
+  padding: 0 30px 26px;
+}
+
+.accordion-body p {
+  color: var(--text-secondary);
   line-height: 1.75;
+  font-size: 0.95rem;
   max-width: 820px;
 }
 
-.hover-expand-desc strong {
+.accordion-body strong {
   color: var(--text-primary);
   font-weight: 600;
 }
 
-/* Responsive adjustments */
 @media (max-width: 768px) {
-  .hover-expand-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 8px;
-    padding: 18px 14px;
+  .accordion-header {
+    padding: 20px 20px;
+    gap: 14px;
   }
-
-  .hover-expand-meta {
-    padding-left: calc(16px + 18px);
-    width: 100%;
-    justify-content: space-between;
+  .accordion-title {
+    font-size: 1.05rem;
   }
-
-  .hover-expand-content {
-    padding: 0 14px 20px calc(14px + 16px + 18px);
+  .accordion-body {
+    padding: 0 20px;
+  }
+  .accordion-item.active .accordion-body {
+    padding: 0 20px 22px;
   }
 }
 
 @media (max-width: 480px) {
-  .hover-expand-main {
-    gap: 10px;
+  .accordion-header {
+    padding: 18px 16px;
   }
-
-  .hover-expand-content {
-    padding: 0 14px 18px 14px;
+  .accordion-icon {
+    width: 28px;
+    height: 28px;
+    font-size: 1.2rem;
   }
-
-  .hover-expand-meta {
-    padding-left: 0;
+  .accordion-body {
+    padding: 0 16px;
+  }
+  .accordion-item.active .accordion-body {
+    padding: 0 16px 20px;
   }
 }
 
@@ -1958,8 +1846,10 @@ section,
 .container,
 .metric-card,
 .project-card,
-.hover-expand-list,
-.hover-expand-item,
+.accordion-list,
+.accordion-item,
+.accordion-header,
+.accordion-icon,
 .skill-group h3,
 .skill-item,
 .extras-item,

@@ -632,32 +632,14 @@
   // ——————————————————————————————————————————————
 
   function animateHero() {
-    const badge = document.querySelector('.luxury-badge');
     const name = document.querySelector('.hero-name');
-    const subline = document.querySelector('.hero-subline');
-
-    if (badge) {
-      setTimeout(() => {
-        badge.style.transition = 'opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1)';
-        badge.style.opacity = '1';
-        badge.style.transform = 'translateY(0)';
-      }, 200);
-    }
 
     if (name) {
       setTimeout(() => {
         name.style.transition = 'opacity 1s cubic-bezier(0.16, 1, 0.3, 1), transform 1s cubic-bezier(0.16, 1, 0.3, 1)';
         name.style.opacity = '1';
         name.style.transform = 'translateY(0)';
-      }, 400);
-    }
-
-    if (subline) {
-      setTimeout(() => {
-        subline.style.transition = 'opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1), transform 0.9s cubic-bezier(0.16, 1, 0.3, 1)';
-        subline.style.opacity = '1';
-        subline.style.transform = 'translateY(0)';
-      }, 650);
+      }, 300);
     }
   }
 
@@ -850,44 +832,49 @@
   }
 
   // ——————————————————————————————————————————————
-  // 8. HOVER EXPAND — Education & Experience (Text Reveal)
+  // 8. ACCORDIONS — Education & Experience
   // ——————————————————————————————————————————————
 
-  function initHoverExpand() {
-    const lists = document.querySelectorAll('.hover-expand-list');
+  function initAccordions() {
+    const items = document.querySelectorAll('.accordion-item');
 
-    lists.forEach((list) => {
-      const items = list.querySelectorAll('.hover-expand-item');
+    items.forEach((item) => {
+      const header = item.querySelector('.accordion-header');
+      if (!header) return;
 
-      items.forEach((item) => {
-        // Click / tap support (touch screens and click-toggle)
-        item.addEventListener('click', () => {
-          const isExpanded = item.classList.contains('is-expanded');
+      header.addEventListener('click', () => {
+        const isActive = item.classList.contains('active');
 
-          // Close other items in this list
-          items.forEach((sibling) => {
+        // Close sibling items in the same list
+        const parent = item.closest('.accordion-list');
+        if (parent) {
+          parent.querySelectorAll('.accordion-item').forEach((sibling) => {
             if (sibling !== item) {
-              sibling.classList.remove('is-expanded');
-              sibling.setAttribute('aria-expanded', 'false');
+              sibling.classList.remove('active');
+              const sibHeader = sibling.querySelector('.accordion-header');
+              if (sibHeader) sibHeader.setAttribute('aria-expanded', 'false');
+              const sibBody = sibling.querySelector('.accordion-body');
+              if (sibBody) sibBody.style.maxHeight = null;
             }
           });
+        }
 
-          if (!isExpanded) {
-            item.classList.add('is-expanded');
-            item.setAttribute('aria-expanded', 'true');
-          } else {
-            item.classList.remove('is-expanded');
-            item.setAttribute('aria-expanded', 'false');
+        // Toggle current item
+        if (!isActive) {
+          item.classList.add('active');
+          header.setAttribute('aria-expanded', 'true');
+          const body = item.querySelector('.accordion-body');
+          if (body) {
+            body.style.maxHeight = body.scrollHeight + 'px';
           }
-        });
-
-        // Keyboard accessibility (Enter / Space)
-        item.addEventListener('keydown', (e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            item.click();
+        } else {
+          item.classList.remove('active');
+          header.setAttribute('aria-expanded', 'false');
+          const body = item.querySelector('.accordion-body');
+          if (body) {
+            body.style.maxHeight = null;
           }
-        });
+        }
       });
     });
   }
@@ -1054,7 +1041,7 @@
     initNav();
     initSmoothScroll();
     initMobileNav();
-    initHoverExpand();
+    initAccordions();
     initEmailModal();
   });
 })();
