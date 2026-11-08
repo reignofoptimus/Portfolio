@@ -243,39 +243,23 @@
   }
 
   // ——————————————————————————————————————————————
-  // 5. HIDDEN NAV — Reveals on scroll past hero or mouse near top
+  // 5. NAV — Persistent top right menu, logo appears on scroll
   // ——————————————————————————————————————————————
 
   function initNav() {
     const nav = document.getElementById('main-nav');
-    const hero = document.getElementById('hero');
-    let navVisible = false;
-    let mouseNearTop = false;
+    if (!nav) return;
 
     function updateNav() {
-      const heroBottom = hero.offsetTop + hero.offsetHeight;
-      const scrolledPastHero = window.scrollY > heroBottom - 100;
-
-      if (scrolledPastHero || mouseNearTop) {
-        if (!navVisible) {
-          nav.classList.add('nav-visible');
-          navVisible = true;
-        }
+      const scrolled = window.scrollY > 80;
+      if (scrolled) {
+        nav.classList.add('scrolled');
       } else {
-        if (navVisible && !mouseNearTop) {
-          nav.classList.remove('nav-visible');
-          navVisible = false;
-        }
+        nav.classList.remove('scrolled');
       }
     }
 
-    window.addEventListener('scroll', updateNav);
-
-    document.addEventListener('mousemove', (e) => {
-      mouseNearTop = e.clientY < 60;
-      updateNav();
-    });
-
+    window.addEventListener('scroll', updateNav, { passive: true });
     updateNav();
   }
 
