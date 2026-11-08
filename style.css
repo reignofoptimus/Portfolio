@@ -160,7 +160,7 @@ img { max-width: 100%; display: block; }
 
 .nav-logo,
 .nav-actions {
-  pointer-events: auto;
+  pointer-events: none;
 }
 
 .nav-logo {
@@ -174,13 +174,8 @@ img { max-width: 100%; display: block; }
   text-decoration: none;
   opacity: 0;
   transform: translateX(-8px);
-  transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1),
-              transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.nav.scrolled .nav-logo {
-  opacity: 1;
-  transform: translateX(0);
+  transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 /* Top-Right Navigation Controls (Menu Button) */
@@ -189,6 +184,17 @@ img { max-width: 100%; display: block; }
   align-items: center;
   margin-left: auto;
   position: relative;
+  opacity: 0;
+  transform: translateX(8px);
+  transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.nav.scrolled .nav-logo,
+.nav.scrolled .nav-actions {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateX(0);
 }
 
 /* ============================================================

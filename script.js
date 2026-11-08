@@ -243,7 +243,7 @@
   }
 
   // ——————————————————————————————————————————————
-  // 5. NAV — Persistent top right menu, logo appears on scroll
+  // 5. NAV — Hidden on landing page, reveals on scroll
   // ——————————————————————————————————————————————
 
   function initNav() {
@@ -256,6 +256,8 @@
         nav.classList.add('scrolled');
       } else {
         nav.classList.remove('scrolled');
+        const fluidNav = document.getElementById('fluid-nav');
+        if (fluidNav) fluidNav.classList.remove('is-open');
       }
     }
 
