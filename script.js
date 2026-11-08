@@ -10,387 +10,222 @@
   const htmlEl = document.documentElement;
 
   // ——————————————————————————————————————————————
-  // 1. FLOW FIELD WITH PARTICLE TRAILS (Verified Authored Source)
+  // 1. HALFTONE FLOW WEBGL BACKGROUND (Verified Nexus Unified Flow)
   // ——————————————————————————————————————————————
-
-  // Simplex Noise (compact implementation based on Stefan Gustavson)
-  const SimplexNoise = (function() {
-    const F2 = 0.5 * (Math.sqrt(3) - 1);
-    const G2 = (3 - Math.sqrt(3)) / 6;
-    const F3 = 1 / 3;
-    const G3 = 1 / 6;
-
-    const grad3 = [
-      [1,1,0],[-1,1,0],[1,-1,0],[-1,-1,0],
-      [1,0,1],[-1,0,1],[1,0,-1],[-1,0,-1],
-      [0,1,1],[0,-1,1],[0,1,-1],[0,-1,-1]
-    ];
-
-    function SimplexNoise(seed) {
-      this.perm = new Uint8Array(512);
-      this.permMod12 = new Uint8Array(512);
-      const p = new Uint8Array(256);
-      seed = seed || Math.random() * 65536;
-      for (let i = 0; i < 256; i++) p[i] = i;
-      for (let i = 255; i > 0; i--) {
-        seed = (seed * 16807 + 0) % 2147483647;
-        const j = seed % (i + 1);
-        const tmp = p[i];
-        p[i] = p[j];
-        p[j] = tmp;
-      }
-      for (let i = 0; i < 512; i++) {
-        this.perm[i] = p[i & 255];
-        this.permMod12[i] = this.perm[i] % 12;
-      }
-    }
-
-    SimplexNoise.prototype.noise2D = function(xin, yin) {
-      const perm = this.perm, permMod12 = this.permMod12;
-      let n0, n1, n2;
-      const s = (xin + yin) * F2;
-      const i = Math.floor(xin + s);
-      const j = Math.floor(yin + s);
-      const t = (i + j) * G2;
-      const X0 = i - t, Y0 = j - t;
-      const x0 = xin - X0, y0 = yin - Y0;
-      let i1, j1;
-      if (x0 > y0) { i1 = 1; j1 = 0; }
-      else { i1 = 0; j1 = 1; }
-      const x1 = x0 - i1 + G2, y1 = y0 - j1 + G2;
-      const x2 = x0 - 1 + 2 * G2, y2 = y0 - 1 + 2 * G2;
-      const ii = i & 255, jj = j & 255;
-      let t0 = 0.5 - x0*x0 - y0*y0;
-      if (t0 < 0) n0 = 0;
-      else { t0 *= t0; const gi = permMod12[ii + perm[jj]]; n0 = t0 * t0 * (grad3[gi][0]*x0 + grad3[gi][1]*y0); }
-      let t1 = 0.5 - x1*x1 - y1*y1;
-      if (t1 < 0) n1 = 0;
-      else { t1 *= t1; const gi = permMod12[ii + i1 + perm[jj + j1]]; n1 = t1 * t1 * (grad3[gi][0]*x1 + grad3[gi][1]*y1); }
-      let t2 = 0.5 - x2*x2 - y2*y2;
-      if (t2 < 0) n2 = 0;
-      else { t2 *= t2; const gi = permMod12[ii + 1 + perm[jj + 1]]; n2 = t2 * t2 * (grad3[gi][0]*x2 + grad3[gi][1]*y2); }
-      return 70 * (n0 + n1 + n2);
-    };
-
-    SimplexNoise.prototype.noise3D = function(xin, yin, zin) {
-      const perm = this.perm, permMod12 = this.permMod12;
-      let n0, n1, n2, n3;
-      const s = (xin + yin + zin) * F3;
-      const i = Math.floor(xin + s), j = Math.floor(yin + s), k = Math.floor(zin + s);
-      const t = (i + j + k) * G3;
-      const X0 = i - t, Y0 = j - t, Z0 = k - t;
-      const x0 = xin - X0, y0 = yin - Y0, z0 = zin - Z0;
-      let i1, j1, k1, i2, j2, k2;
-      if (x0 >= y0) {
-        if (y0 >= z0) { i1=1;j1=0;k1=0;i2=1;j2=1;k2=0; }
-        else if (x0 >= z0) { i1=1;j1=0;k1=0;i2=1;j2=0;k2=1; }
-        else { i1=0;j1=0;k1=1;i2=1;j2=0;k2=1; }
-      } else {
-        if (y0 < z0) { i1=0;j1=0;k1=1;i2=0;j2=1;k2=1; }
-        else if (x0 < z0) { i1=0;j1=1;k1=0;i2=0;j2=1;k2=1; }
-        else { i1=0;j1=1;k1=0;i2=1;j2=1;k2=0; }
-      }
-      const x1 = x0 - i1 + G3, y1 = y0 - j1 + G3, z1 = z0 - k1 + G3;
-      const x2 = x0 - i2 + 2*G3, y2 = y0 - j2 + 2*G3, z2 = z0 - k2 + 2*G3;
-      const x3 = x0 - 1 + 3*G3, y3 = y0 - 1 + 3*G3, z3 = z0 - 1 + 3*G3;
-      const ii = i & 255, jj = j & 255, kk = k & 255;
-      let t0 = 0.6 - x0*x0 - y0*y0 - z0*z0;
-      if (t0 < 0) n0 = 0;
-      else { t0 *= t0; const gi = permMod12[ii+perm[jj+perm[kk]]]; n0 = t0*t0*(grad3[gi][0]*x0+grad3[gi][1]*y0+grad3[gi][2]*z0); }
-      let t1 = 0.6 - x1*x1 - y1*y1 - z1*z1;
-      if (t1 < 0) n1 = 0;
-      else { t1 *= t1; const gi = permMod12[ii+i1+perm[jj+j1+perm[kk+k1]]]; n1 = t1*t1*(grad3[gi][0]*x1+grad3[gi][1]*y1+grad3[gi][2]*z1); }
-      let t2 = 0.6 - x2*x2 - y2*y2 - z2*z2;
-      if (t2 < 0) n2 = 0;
-      else { t2 *= t2; const gi = permMod12[ii+i2+perm[jj+j2+perm[kk+k2]]]; n2 = t2*t2*(grad3[gi][0]*x2+grad3[gi][1]*y2+grad3[gi][2]*z2); }
-      let t3 = 0.6 - x3*x3 - y3*y3 - z3*z3;
-      if (t3 < 0) n3 = 0;
-      else { t3 *= t3; const gi = permMod12[ii+1+perm[jj+1+perm[kk+1]]]; n3 = t3*t3*(grad3[gi][0]*x3+grad3[gi][1]*y3+grad3[gi][2]*z3); }
-      return 32 * (n0 + n1 + n2 + n3);
-    };
-
-    return SimplexNoise;
-  })();
 
   function initFlowField() {
     const canvas = document.getElementById('bg-canvas');
     if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    const noise = new SimplexNoise(42);
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
 
-    let W, H;
-
-    function isDarkMode() {
-      return htmlEl.getAttribute('data-theme') !== 'light';
+    let gl = null;
+    try {
+      gl = canvas.getContext('webgl', {
+        alpha: false,
+        antialias: false,
+        depth: false,
+        stencil: false,
+        powerPreference: 'high-performance'
+      }) || canvas.getContext('experimental-webgl');
+    } catch (e) {
+      gl = null;
     }
 
-    function getBgColor() {
-      return isDarkMode() ? '#030704' : '#f6f9f7';
+    if (!gl) {
+      console.warn('WebGL not supported');
+      return;
     }
 
-    function getFadeFill() {
-      return isDarkMode() ? 'rgba(3, 7, 4, 0.036)' : 'rgba(246, 249, 247, 0.045)';
+    // Vertex Shader
+    const vsSource = `
+      attribute vec2 aVertexPosition;
+      void main() {
+        gl_Position = vec4(aVertexPosition, 0.0, 1.0);
+      }
+    `;
+
+    // Fragment Shader (Halftone Flow with Luxury Burgundy Palette)
+    const fsSource = `
+      precision highp float;
+      uniform vec2 u_resolution;
+      uniform float u_time;
+      uniform float u_theme;
+
+      mat2 rot(float a) {
+        float s = sin(a), c = cos(a);
+        return mat2(c, -s, s, c);
+      }
+
+      void main() {
+        vec2 uv = gl_FragCoord.xy / u_resolution.xy;
+        vec2 p = uv * 2.0 - 1.0;
+        p.x *= u_resolution.x / u_resolution.y;
+
+        vec2 flow_uv = p;
+        float time = u_time * 0.35;
+        
+        for (float i = 1.0; i < 4.0; i++) {
+          flow_uv *= rot(time * 0.08);
+          flow_uv.x += sin(flow_uv.y * 2.0 * i + time) * 0.5;
+          flow_uv.y += cos(flow_uv.x * 1.5 * i - time * 0.8) * 0.5;
+        }
+
+        float intensity = sin(flow_uv.x * 2.0 + flow_uv.y * 3.0) * 0.5 + 0.5;
+
+        // Halftone dot-matrix grid calculation (Nexus Halftone Flow verified source)
+        float gridSize = 6.5; 
+        vec2 grid_uv = gl_FragCoord.xy / gridSize;
+        vec2 cell_uv = fract(grid_uv) - 0.5;
+        
+        float dist = length(cell_uv);
+        float radius = intensity * 0.44; 
+        float dot_mask = smoothstep(radius, radius - 0.12, dist);
+
+        // --- DARK MODE PALETTE: Haute Burgundy Velvet ---
+        // Deep obsidian-noir wine base (#080204)
+        vec3 dark_bg = vec3(0.031, 0.008, 0.016);
+        // Rich Bordeaux burgundy wine (#7d0f2b)
+        vec3 dark_wine = vec3(0.49, 0.06, 0.17);
+        // Radiant ruby-rose highlight (#d93863)
+        vec3 dark_ruby = vec3(0.85, 0.22, 0.39);
+        
+        vec3 dark_fluid = mix(dark_bg, dark_wine, smoothstep(0.18, 0.62, intensity));
+        dark_fluid = mix(dark_fluid, dark_ruby, smoothstep(0.68, 1.0, intensity));
+        
+        vec3 dark_final = mix(dark_bg, dark_fluid, dot_mask);
+        dark_final += dark_fluid * 0.16;
+
+        // --- LIGHT MODE PALETTE: Champagne Silk & Rose Wine ---
+        // Ivory champagne silk base (#fbf7f8)
+        vec3 light_bg = vec3(0.984, 0.968, 0.973);
+        // Delicate soft rose silk (#dfc2cb)
+        vec3 light_rose = vec3(0.87, 0.74, 0.79);
+        // Deep Bordeaux ink dots (#700d24)
+        vec3 light_wine = vec3(0.44, 0.05, 0.14);
+
+        vec3 light_fluid = mix(light_bg, light_rose, smoothstep(0.2, 0.65, intensity));
+        light_fluid = mix(light_fluid, light_wine, smoothstep(0.7, 1.0, intensity));
+
+        vec3 light_final = mix(light_bg, light_fluid, dot_mask * 0.75);
+
+        // Smooth transition between themes
+        vec3 final_color = mix(light_final, dark_final, u_theme);
+
+        gl_FragColor = vec4(final_color, 1.0);
+      }
+    `;
+
+    function compileShader(type, source) {
+      const shader = gl.createShader(type);
+      gl.shaderSource(shader, source);
+      gl.compileShader(shader);
+      if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+        console.error(gl.getShaderInfoLog(shader));
+        gl.deleteShader(shader);
+        return null;
+      }
+      return shader;
     }
+
+    const vertexShader = compileShader(gl.VERTEX_SHADER, vsSource);
+    const fragmentShader = compileShader(gl.FRAGMENT_SHADER, fsSource);
+    if (!vertexShader || !fragmentShader) return;
+
+    const program = gl.createProgram();
+    gl.attachShader(program, vertexShader);
+    gl.attachShader(program, fragmentShader);
+    gl.linkProgram(program);
+
+    if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+      console.error(gl.getProgramInfoLog(program));
+      return;
+    }
+    gl.useProgram(program);
+
+    const positions = new Float32Array([
+      -1.0,  1.0,
+       1.0,  1.0,
+      -1.0, -1.0,
+       1.0, -1.0,
+    ]);
+    const positionBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, positions, gl.STATIC_DRAW);
+
+    const positionLocation = gl.getAttribLocation(program, 'aVertexPosition');
+    gl.enableVertexAttribArray(positionLocation);
+    gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
+
+    const resolutionLocation = gl.getUniformLocation(program, 'u_resolution');
+    const timeLocation = gl.getUniformLocation(program, 'u_time');
+    const themeLocation = gl.getUniformLocation(program, 'u_theme');
+
+    let currentTheme = htmlEl.getAttribute('data-theme') === 'light' ? 0.0 : 1.0;
+    let targetTheme = currentTheme;
 
     function resize() {
-      W = window.innerWidth;
-      H = window.innerHeight;
-      canvas.width = W * dpr;
-      canvas.height = H * dpr;
-      canvas.style.width = W + 'px';
-      canvas.style.height = H + 'px';
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      // Fill with current theme background on resize to avoid flash
-      ctx.fillStyle = getBgColor();
-      ctx.fillRect(0, 0, W, H);
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+      const displayWidth = Math.floor(width * dpr);
+      const displayHeight = Math.floor(height * dpr);
+
+      if (canvas.width !== displayWidth || canvas.height !== displayHeight) {
+        canvas.width = displayWidth;
+        canvas.height = displayHeight;
+        gl.viewport(0, 0, canvas.width, canvas.height);
+      }
     }
 
-    window.addEventListener('resize', resize);
+    window.addEventListener('resize', resize, { passive: true });
     resize();
 
-    // Mouse / pointer tracking
-    const mouse = { x: -9999, y: -9999, active: false };
-    window.addEventListener('mousemove', function(e) {
-      mouse.x = e.clientX;
-      mouse.y = e.clientY;
-      mouse.active = true;
-    });
-    window.addEventListener('mouseleave', function() {
-      mouse.active = false;
-    });
-    window.addEventListener('touchmove', function(e) {
-      if (e.touches && e.touches.length > 0) {
-        mouse.x = e.touches[0].clientX;
-        mouse.y = e.touches[0].clientY;
-        mouse.active = true;
-      }
-    }, { passive: true });
-    window.addEventListener('touchend', function() {
-      mouse.active = false;
-    });
+    let startTime = performance.now();
+    let animId = null;
+    let isVisible = true;
+    let lastElapsed = 0;
 
-    // Color space conversion utilities
-    function rgbToHsl(r, g, b) {
-      r /= 255; g /= 255; b /= 255;
-      const max = Math.max(r, g, b), min = Math.min(r, g, b);
-      let h = 0, s = 0, l = (max + min) / 2;
-      if (max !== min) {
-        const d = max - min;
-        s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-        switch (max) {
-          case r: h = ((g - b) / d + (g < b ? 6 : 0)) * 60; break;
-          case g: h = ((b - r) / d + 2) * 60; break;
-          case b: h = ((r - g) / d + 4) * 60; break;
-        }
-      }
-      return [h, s, l];
-    }
-
-    function hslToRgb(h, s, l) {
-      h = ((h % 360) + 360) % 360;
-      const c = (1 - Math.abs(2 * l - 1)) * s;
-      const x = c * (1 - Math.abs(((h / 60) % 2) - 1));
-      const m = l - c / 2;
-      let r = 0, g = 0, b = 0;
-      if (h < 60) { r = c; g = x; }
-      else if (h < 120) { r = x; g = c; }
-      else if (h < 180) { g = c; b = x; }
-      else if (h < 240) { g = x; b = c; }
-      else if (h < 300) { r = x; b = c; }
-      else { r = c; b = x; }
-      return {
-        r: Math.round((r + m) * 255),
-        g: Math.round((g + m) * 255),
-        b: Math.round((b + m) * 255)
-      };
-    }
-
-    // Bespoke Haute Luxury Dark Green & Royal Emerald Palette
-    const basePalette = [
-      { r: 2,  g: 30,  b: 18  }, // deep velvet cypress black-green
-      { r: 4,  g: 50,  b: 30  }, // imperial dark forest
-      { r: 6,  g: 74,  b: 46  }, // deep british racing green
-      { r: 10, g: 104, b: 64  }, // rich dark emerald jade
-      { r: 16, g: 148, b: 92  }, // radiant royal emerald
-      { r: 34, g: 198, b: 124 }, // luminous emerald crest
-      { r: 76, g: 226, b: 156 }  // silk mint filament highlight
-    ];
-
-    // Fixed dark green hue — locked in bespoke emerald/forest spectrum
-    let SAT_MULT = 1.6;
-
-    // Precompute HSL with luxury saturation
-    const basePaletteHSL = basePalette.map(c => {
-      const [h, s, l] = rgbToHsl(c.r, c.g, c.b);
-      return { h, s: Math.min(1.0, s * SAT_MULT), l };
-    });
-
-    const palette = basePalette.map(() => ({ r: 0, g: 0, b: 0 }));
-
-    function updatePalette(hueShift) {
-      const dark = isDarkMode();
-      for (let i = 0; i < basePaletteHSL.length; i++) {
-        const entry = basePaletteHSL[i];
-        // In dark mode: entry.l is calibrated for luminous silk filaments against deep obsidian velvet
-        const targetL = dark ? Math.max(0.24, Math.min(0.68, entry.l)) : Math.max(0.22, Math.min(0.38, entry.l * 0.52));
-        const targetS = dark ? Math.min(1.0, entry.s * 1.05) : Math.min(1.0, entry.s * 1.25);
-        const rgb = hslToRgb(entry.h + hueShift, targetS, targetL);
-        palette[i].r = rgb.r;
-        palette[i].g = rgb.g;
-        palette[i].b = rgb.b;
-      }
-    }
-
-    // Initialize locked into dark green (0 hue shift)
-    updatePalette(0);
-
-    function lerpColor(a, b, t) {
-      return {
-        r: a.r + (b.r - a.r) * t,
-        g: a.g + (b.g - a.g) * t,
-        b: a.b + (b.b - a.b) * t
-      };
-    }
-
-    function getColor(noiseVal) {
-      // Map noise [-1,1] to palette index
-      const t = (noiseVal + 1) * 0.5; // 0..1
-      const idx = t * (palette.length - 1);
-      const i = Math.floor(idx);
-      const f = idx - i;
-      const a = palette[Math.min(i, palette.length - 1)];
-      const b = palette[Math.min(i + 1, palette.length - 1)];
-      return lerpColor(a, b, f);
-    }
-
-    // Particles
-    const PARTICLE_COUNT = 2500;
-    let NOISE_SCALE = 0.0025;
-    let SPEED = 1.0;
-    const MOUSE_RADIUS = 150;
-    const MOUSE_FORCE = 2.5;
-
-    const particles = [];
-
-    function createParticle() {
-      return {
-        x: Math.random() * W,
-        y: Math.random() * H,
-        speed: 0.4 + Math.random() * 1.0,
-        alpha: 0.15 + Math.random() * 0.55,
-        size: 0.5 + Math.random() * 1.5
-      };
-    }
-
-    for (let i = 0; i < PARTICLE_COUNT; i++) {
-      particles.push(createParticle());
-    }
-
-    // Animation
-    let time = 0;
-
-    function draw() {
-      // Fade previous frame with theme-calibrated overlay — creates trailing effect
-      ctx.fillStyle = getFadeFill();
-      ctx.fillRect(0, 0, W, H);
-
-      time += 0.0008;
-
-      // Fixed Dark Green Hue — subtle micro-undulation for organic silk breathing without color shifting
-      const greenBreathing = Math.sin(time * 0.6) * 1.5;
-      updatePalette(greenBreathing);
-
-      const dark = isDarkMode();
-      for (let i = 0; i < PARTICLE_COUNT; i++) {
-        const p = particles[i];
-
-        // Sample noise field at particle position with time evolution
-        const nx = p.x * NOISE_SCALE;
-        const ny = p.y * NOISE_SCALE;
-        const angle = noise.noise3D(nx, ny, time) * Math.PI * 2;
-
-        // Secondary noise for color variation
-        const colorNoise = noise.noise3D(nx * 1.5 + 100, ny * 1.5 + 100, time * 0.5);
-
-        // Velocity from flow field
-        let vx = Math.cos(angle) * p.speed * SPEED;
-        let vy = Math.sin(angle) * p.speed * SPEED;
-
-        // Mouse interaction — gentle push away
-        if (mouse.active) {
-          const dx = p.x - mouse.x;
-          const dy = p.y - mouse.y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-          if (dist < MOUSE_RADIUS && dist > 0) {
-            const force = (1 - dist / MOUSE_RADIUS) * MOUSE_FORCE;
-            vx += (dx / dist) * force;
-            vy += (dy / dist) * force;
-          }
-        }
-
-        // Store previous position for line drawing
-        const px = p.x;
-        const py = p.y;
-
-        // Update position
-        p.x += vx;
-        p.y += vy;
-
-        // Draw particle trail segment
-        const color = getColor(colorNoise);
-        ctx.beginPath();
-        ctx.moveTo(px, py);
-        ctx.lineTo(p.x, p.y);
-        const alpha = dark ? p.alpha : Math.min(0.92, p.alpha * 1.35);
-        ctx.strokeStyle = 'rgba(' + Math.round(color.r) + ',' + Math.round(color.g) + ',' + Math.round(color.b) + ',' + alpha + ')';
-        ctx.lineWidth = dark ? p.size : p.size * 1.1;
-        ctx.stroke();
-
-        // Respawn if offscreen
-        if (p.x < -20 || p.x > W + 20 || p.y < -20 || p.y > H + 20) {
-          p.x = Math.random() * W;
-          p.y = Math.random() * H;
-        }
-      }
-
-      requestAnimationFrame(draw);
-    }
-
-    // Initial fill with theme-aware background
-    ctx.fillStyle = getBgColor();
-    ctx.fillRect(0, 0, W, H);
-
-    requestAnimationFrame(draw);
-
-    // Immediate reaction to theme toggle
-    window.addEventListener('themechange', function(e) {
-      if (e.detail && e.detail.theme) {
-        ctx.fillStyle = getBgColor();
-        ctx.fillRect(0, 0, W, H);
-        updatePalette(0);
+    document.addEventListener('visibilitychange', () => {
+      isVisible = !document.hidden;
+      if (isVisible && !animId) {
+        startTime = performance.now() - (lastElapsed * 1000.0);
+        animId = requestAnimationFrame(render);
       }
     });
 
-    window.addEventListener('message', function(e) {
-      if (e.data && e.data.type === 'param') {
-        switch (e.data.name) {
-          case 'SPEED': SPEED = e.data.value; break;
-          case 'NOISE_SCALE': NOISE_SCALE = e.data.value; break;
-          case 'HUE_SPEED': HUE_SPEED = e.data.value; break;
-          case 'SATURATION':
-            SAT_MULT = e.data.value;
-            for (let i = 0; i < basePalette.length; i++) {
-              const [h, s, l] = rgbToHsl(basePalette[i].r, basePalette[i].g, basePalette[i].b);
-              basePaletteHSL[i] = { h, s: Math.min(1.0, s * SAT_MULT), l };
-            }
-            updatePalette(currentHue);
-            break;
-        }
+    function render(now) {
+      if (!isVisible) {
+        animId = null;
+        return;
       }
-    });
 
-    console.log('Flow field background initialized');
+      // Smooth theme transitions
+      targetTheme = htmlEl.getAttribute('data-theme') === 'light' ? 0.0 : 1.0;
+      currentTheme += (targetTheme - currentTheme) * 0.1;
+
+      const elapsed = (now - startTime) / 1000.0;
+      lastElapsed = elapsed;
+
+      gl.uniform2f(resolutionLocation, canvas.width, canvas.height);
+      gl.uniform1f(timeLocation, elapsed);
+      gl.uniform1f(themeLocation, currentTheme);
+
+      gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+
+      animId = requestAnimationFrame(render);
+    }
+
+    animId = requestAnimationFrame(render);
+
+    // Handle WebGL context loss gracefully
+    canvas.addEventListener('webglcontextlost', (e) => {
+      e.preventDefault();
+      if (animId) cancelAnimationFrame(animId);
+      animId = null;
+    }, false);
+
+    canvas.addEventListener('webglcontextrestored', () => {
+      initFlowField();
+    }, false);
   }
 
   // ——————————————————————————————————————————————
