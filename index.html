@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nirmal Madhu — Developer & Designer</title>
+  <meta name="description" content="Portfolio of Nirmal Madhu — B.Tech Computer Science & Design student, full-stack developer, and AI systems builder." />
+  <script>
+    (function() {
+      try {
+        const theme = localStorage.getItem('portfolio-theme') || 'dark';
+        document.documentElement.setAttribute('data-theme', theme);
+      } catch (e) {}
+    })();
+  </script>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- THREE.JS CANVAS -->
+  <canvas id="bg-canvas"></canvas>
+
+  <!-- NAVIGATION (hidden by default, appears on scroll / mouse near top) -->
+  <nav class="nav" id="main-nav">
+    <a href="#hero" class="nav-logo">NIRMAL MADHU</a>
+
+    <div class="nav-actions">
+      <!-- FLUID NAVIGATION MENU (Left to the toggle) -->
+      <div class="fluid-nav" id="fluid-nav">
+        <button class="fluid-menu-btn" id="fluid-menu-btn" aria-expanded="false" aria-label="Toggle navigation menu">
+          <span class="fluid-menu-icon" aria-hidden="true">
+            <span class="fluid-bar fluid-bar-top"></span>
+            <span class="fluid-bar fluid-bar-bottom"></span>
+          </span>
+          <span class="fluid-menu-text">
+            <span class="text-state text-state-menu">Menu</span>
+            <span class="text-state text-state-close">Close</span>
+          </span>
+        </button>
+
+        <div class="fluid-menu-dropdown" id="fluid-menu-dropdown" role="menu">
+          <div class="fluid-menu-items">
+            <a href="#about" class="fluid-menu-item" role="menuitem" style="--i: 0;">
+              <span class="fluid-item-num">01</span>
+              <span class="fluid-item-label">About</span>
+              <span class="fluid-item-arrow" aria-hidden="true">→</span>
+            </a>
+            <a href="#education" class="fluid-menu-item" role="menuitem" style="--i: 1;">
+              <span class="fluid-item-num">02</span>
+              <span class="fluid-item-label">Education</span>
+              <span class="fluid-item-arrow" aria-hidden="true">→</span>
+            </a>
+            <a href="#experience" class="fluid-menu-item" role="menuitem" style="--i: 2;">
+              <span class="fluid-item-num">03</span>
+              <span class="fluid-item-label">Experience</span>
+              <span class="fluid-item-arrow" aria-hidden="true">→</span>
+            </a>
+            <a href="#projects" class="fluid-menu-item" role="menuitem" style="--i: 3;">
+              <span class="fluid-item-num">04</span>
+              <span class="fluid-item-label">Projects</span>
+              <span class="fluid-item-arrow" aria-hidden="true">→</span>
+            </a>
+            <a href="#skills" class="fluid-menu-item" role="menuitem" style="--i: 4;">
+              <span class="fluid-item-num">05</span>
+              <span class="fluid-item-label">Skills</span>
+              <span class="fluid-item-arrow" aria-hidden="true">→</span>
+            </a>
+            <a href="#contact" class="fluid-menu-item" role="menuitem" style="--i: 5;">
+              <span class="fluid-item-num">06</span>
+              <span class="fluid-item-label">Contact</span>
+              <span class="fluid-item-arrow" aria-hidden="true">→</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- THEME TOGGLE (Top right) -->
+      <button class="apple-switch" id="theme-toggle" role="switch" aria-checked="true" aria-label="Toggle theme">
+        <span class="apple-switch-glow"></span>
+        <span class="apple-switch-track">
+          <span class="apple-switch-track-off">
+            <span class="apple-switch-icon sun" aria-hidden="true">☀</span>
+          </span>
+          <span class="apple-switch-track-on">
+            <span class="apple-switch-icon moon" aria-hidden="true">☽</span>
+          </span>
+        </span>
+        <span class="apple-switch-liquid"></span>
+        <span class="apple-switch-thumb">
+          <span class="apple-switch-thumb-specular"></span>
+        </span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- HERO — Stacked name, full viewport -->
+  <section class="hero" id="hero">
+    <div class="hero-content">
+      <h1 class="hero-name">
+        <span class="hero-name-line hero-name-first">Nirmal</span>
+        <span class="hero-name-line hero-name-last">Madhu</span>
+      </h1>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section class="about" id="about">
+    <div class="container">
+      <span class="section-label reveal">About</span>
+      <div class="about-grid">
+        <div class="about-text">
+          <h2 class="section-title reveal reveal-delay-1">Entering the world of Computer Science.</h2>
+          <p class="reveal reveal-delay-2">
+            I'm <strong>Nirmal Madhu</strong>, currently pursuing my B.Tech in Computer Science & Design at the
+            <strong>Federal Institute of Science and Technology (FISAT)</strong>, affiliated with
+            <strong>APJ Abdul Kalam Technological University (KTU)</strong>.
+          </p>
+          <p class="reveal reveal-delay-3">
+            I'm passionate about exploring the vast landscape of software engineering—building full-stack applications and AI-integrated systems that solve real problems. I love diving into modern technologies and crafting experiences where clean design meets robust code.
+          </p>
+        </div>
+        <div class="about-stats reveal reveal-delay-3" id="about-stats">
+          <div class="metric-card" data-stat="btech">
+            <div class="metric-body">
+              <span class="metric-label">B.Tech</span>
+              <div class="metric-value metric-value-text">CS &amp; Design</div>
+            </div>
+          </div>
+
+          <div class="metric-card" data-stat="projects">
+            <div class="metric-body">
+              <span class="metric-label">Projects</span>
+              <div class="metric-value">
+                <span class="metric-number" data-target="3">3</span><span class="metric-unit">+</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="metric-card" data-stat="leadership">
+            <div class="metric-body">
+              <span class="metric-label">Leadership</span>
+              <div class="metric-value">
+                <span class="metric-number" data-target="5">5</span><span class="metric-unit">+</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="metric-card" data-stat="cgpa">
+            <div class="metric-body">
+              <span class="metric-label">CGPA</span>
+              <div class="metric-value">
+                <span class="metric-number" data-target="7.8" data-decimals="1">7.8</span><span class="metric-unit metric-unit-slash">/10</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EDUCATION -->
+  <section class="education" id="education">
+    <div class="container">
+      <span class="section-label reveal">Education</span>
+      <h2 class="section-title reveal reveal-delay-1">Where I've learned.</h2>
+
+      <div class="hover-expand-list reveal reveal-delay-2">
+        <div class="hover-expand-item" tabindex="0" role="button" aria-expanded="false">
+          <div class="hover-expand-header">
+            <div class="hover-expand-main">
+              <span class="hover-expand-num">01</span>
+              <span class="hover-expand-label">Federal Institute of Science and Technology (FISAT)</span>
+            </div>
+            <div class="hover-expand-meta">
+              <span class="hover-expand-sublabel">2023 — 2027 · CGPA: 7.8 / 10</span>
+              <span class="hover-expand-arrow">→</span>
+            </div>
+          </div>
+          <div class="hover-expand-reveal">
+            <div class="hover-expand-content">
+              <div class="hover-expand-sub">Bachelor of Technology in Computer Science & Design</div>
+              <p class="hover-expand-desc">
+                Affiliated to APJ Abdul Kalam Technological University (KTU). Focused on full-stack development, AI-integrated systems, and design thinking throughout the curriculum.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="hover-expand-item" tabindex="0" role="button" aria-expanded="false">
+          <div class="hover-expand-header">
+            <div class="hover-expand-main">
+              <span class="hover-expand-num">02</span>
+              <span class="hover-expand-label">SNDP HSS, Muvattupuzha</span>
+            </div>
+            <div class="hover-expand-meta">
+              <span class="hover-expand-sublabel">Score: 98%</span>
+              <span class="hover-expand-arrow">→</span>
+            </div>
+          </div>
+          <div class="hover-expand-reveal">
+            <div class="hover-expand-content">
+              <div class="hover-expand-sub">Directorate of Higher Secondary Education, Kerala</div>
+              <p class="hover-expand-desc">
+                Built a strong foundation in mathematics and science, sparking an early interest in technology and computing.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="hover-expand-item" tabindex="0" role="button" aria-expanded="false">
+          <div class="hover-expand-header">
+            <div class="hover-expand-main">
+              <span class="hover-expand-num">03</span>
+              <span class="hover-expand-label">Green Valley Public School, Kothamangalam</span>
+            </div>
+            <div class="hover-expand-meta">
+              <span class="hover-expand-sublabel">Score: 96%</span>
+              <span class="hover-expand-arrow">→</span>
+            </div>
+          </div>
+          <div class="hover-expand-reveal">
+            <div class="hover-expand-content">
+              <div class="hover-expand-sub">Central Board of Secondary Education (CBSE)</div>
+              <p class="hover-expand-desc">
+                Completed secondary education under CBSE with a score of <strong>96%</strong>. Actively participated in extracurricular activities, laying the groundwork for leadership and communication skills.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EXPERIENCE & LEADERSHIP -->
+  <section class="experience" id="experience">
+    <div class="container">
+      <span class="section-label reveal">Experience & Leadership</span>
+      <h2 class="section-title reveal reveal-delay-1">Where I've contributed.</h2>
+
+      <div class="hover-expand-list reveal reveal-delay-2">
+        <div class="hover-expand-item" tabindex="0" role="button" aria-expanded="false">
+          <div class="hover-expand-header">
+            <div class="hover-expand-main">
+              <span class="hover-expand-num">01</span>
+              <span class="hover-expand-label">Chair, Computer Society</span>
+            </div>
+            <div class="hover-expand-meta">
+              <span class="hover-expand-sublabel">2026 — Present</span>
+              <span class="hover-expand-arrow">→</span>
+            </div>
+          </div>
+          <div class="hover-expand-reveal">
+            <div class="hover-expand-content">
+              <div class="hover-expand-sub">IEEE FISAT Student Branch</div>
+              <p class="hover-expand-desc">
+                Leading the Computer Society chapter as Chair, responsible for organizing technical events, workshops, and fostering a community of innovation among student members. Driving initiatives to bridge the gap between academic learning and industry practices.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="hover-expand-item" tabindex="0" role="button" aria-expanded="false">
+          <div class="hover-expand-header">
+            <div class="hover-expand-main">
+              <span class="hover-expand-num">02</span>
+              <span class="hover-expand-label">Associate Content Writer</span>
+            </div>
+            <div class="hover-expand-meta">
+              <span class="hover-expand-sublabel">2025 — 2026</span>
+              <span class="hover-expand-arrow">→</span>
+            </div>
+          </div>
+          <div class="hover-expand-reveal">
+            <div class="hover-expand-content">
+              <div class="hover-expand-sub">IEEE FISAT Student Branch</div>
+              <p class="hover-expand-desc">
+                Crafted engaging content for event promotions, technical articles, and social media campaigns. Helped shape the digital voice of the student branch and contributed to increased engagement across platforms.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="hover-expand-item" tabindex="0" role="button" aria-expanded="false">
+          <div class="hover-expand-header">
+            <div class="hover-expand-main">
+              <span class="hover-expand-num">03</span>
+              <span class="hover-expand-label">Public Relations Team Member</span>
+            </div>
+            <div class="hover-expand-meta">
+              <span class="hover-expand-sublabel">2024 — 2025</span>
+              <span class="hover-expand-arrow">→</span>
+            </div>
+          </div>
+          <div class="hover-expand-reveal">
+            <div class="hover-expand-content">
+              <div class="hover-expand-sub">ACM FISAT Sub-committee</div>
+              <p class="hover-expand-desc">
+                Managed public-facing communications and outreach for ACM events and initiatives. Coordinated with teams to ensure consistent branding and effective promotion of technical activities.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="hover-expand-item" tabindex="0" role="button" aria-expanded="false">
+          <div class="hover-expand-header">
+            <div class="hover-expand-main">
+              <span class="hover-expand-num">04</span>
+              <span class="hover-expand-label">NSS Camp Leader</span>
+            </div>
+            <div class="hover-expand-meta">
+              <span class="hover-expand-sublabel">2023</span>
+              <span class="hover-expand-arrow">→</span>
+            </div>
+          </div>
+          <div class="hover-expand-reveal">
+            <div class="hover-expand-content">
+              <div class="hover-expand-sub">National Service Scheme</div>
+              <p class="hover-expand-desc">
+                Led a team during the NSS camp, organizing community service activities and coordinating volunteers. Developed leadership and organizational skills through hands-on social responsibility initiatives.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROJECTS -->
+  <section class="projects" id="projects">
+    <div class="container">
+      <span class="section-label reveal">Projects</span>
+      <h2 class="section-title reveal reveal-delay-1">Things I've built.</h2>
+      <div class="projects-grid">
+
+        <div class="project-card reveal reveal-delay-1">
+          <div class="project-number">01</div>
+          <div class="project-info">
+            <h3 class="project-name">AccessGrid</h3>
+            <p class="project-badge">AI-Enhanced Digital Entry-Exit System</p>
+            <p class="project-desc">
+              Developed an AI-powered digital entry-exit management system as an academic mini-project.
+              Contributed to frontend development, documentation, and DFA-based system testing.
+            </p>
+            <div class="project-tags">
+              <span>React</span>
+              <span>Python</span>
+              <span>Flask</span>
+              <span>PostgreSQL</span>
+              <span>Tesseract OCR</span>
+              <span>YOLOv8</span>
+            </div>
+            <a href="https://github.com/reignofoptimus/AccessGrid" target="_blank" rel="noopener noreferrer" class="project-link">
+              View on GitHub →
+            </a>
+          </div>
+        </div>
+
+        <div class="project-card reveal reveal-delay-2">
+          <div class="project-number">02</div>
+          <div class="project-info">
+            <h3 class="project-name">SkyVoyage</h3>
+            <p class="project-badge">Flight Booking Application</p>
+            <p class="project-desc">
+              Developed a responsive flight booking application using React as part of a group project during a React Workshop.
+              Leveraged AI-assisted development tools to accelerate UI development and component implementation.
+              Collaborated with team members to build reusable React components and deliver an intuitive booking experience.
+            </p>
+            <div class="project-tags">
+              <span>React</span>
+            </div>
+            <a href="https://github.com/reignofoptimus/SkyVoyage-Flight-Booking" target="_blank" rel="noopener noreferrer" class="project-link">
+              View on GitHub →
+            </a>
+          </div>
+        </div>
+
+
+
+      </div>
+    </div>
+  </section>
+
+  <!-- SKILLS -->
+  <section class="skills" id="skills">
+    <div class="container">
+      <span class="section-label reveal">Technical Skills</span>
+      <h2 class="section-title reveal reveal-delay-1">My toolkit.</h2>
+      <div class="skills-grid">
+        <div class="skill-group reveal reveal-delay-1">
+          <h3>Languages</h3>
+          <div class="skill-list">
+            <div class="skill-item">C</div>
+            <div class="skill-item">Java</div>
+            <div class="skill-item">Python</div>
+            <div class="skill-item">JavaScript</div>
+            <div class="skill-item">PHP</div>
+          </div>
+        </div>
+        <div class="skill-group reveal reveal-delay-2">
+          <h3>Web Technologies</h3>
+          <div class="skill-list">
+            <div class="skill-item">HTML</div>
+            <div class="skill-item">CSS</div>
+            <div class="skill-item">Three.js</div>
+          </div>
+        </div>
+        <div class="skill-group reveal reveal-delay-3">
+          <h3>Database</h3>
+          <div class="skill-list">
+            <div class="skill-item">MySQL</div>
+          </div>
+        </div>
+        <div class="skill-group reveal reveal-delay-4">
+          <h3>Soft Skills</h3>
+          <div class="skill-list">
+            <div class="skill-item">Problem Solving</div>
+            <div class="skill-item">Teamwork</div>
+            <div class="skill-item">Communication</div>
+            <div class="skill-item">Leadership</div>
+            <div class="skill-item">Adaptability</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CERTIFICATIONS, WORKSHOPS, LANGUAGES -->
+  <section class="extras" id="extras">
+    <div class="container">
+      <div class="extras-grid">
+
+        <div class="extras-block reveal reveal-delay-1">
+          <span class="section-label">Internship</span>
+          <div class="extras-list">
+            <div class="extras-item">
+              <span class="extras-bullet"></span>
+              AI & Machine Learning Intern — SRAI Smart Solutions Pvt. Ltd.
+            </div>
+          </div>
+        </div>
+
+        <div class="extras-block reveal reveal-delay-2">
+          <span class="section-label">Certification</span>
+          <div class="extras-list">
+            <div class="extras-item">
+              <span class="extras-bullet"></span>
+              NPTEL — Fundamental Algorithms: Design and Analysis
+            </div>
+          </div>
+        </div>
+
+        <div class="extras-block reveal reveal-delay-2">
+          <span class="section-label">Workshops</span>
+          <div class="extras-list">
+            <div class="extras-item">
+              <span class="extras-bullet"></span>
+              React Workshop
+            </div>
+            <div class="extras-item">
+              <span class="extras-bullet"></span>
+              Node.js Workshop
+            </div>
+            <div class="extras-item">
+              <span class="extras-bullet"></span>
+              Artificial Intelligence Workshop
+            </div>
+          </div>
+        </div>
+
+        <div class="extras-block reveal reveal-delay-3">
+          <span class="section-label">Languages</span>
+          <div class="extras-list">
+            <div class="extras-item">
+              <span class="extras-bullet"></span>
+              English
+            </div>
+            <div class="extras-item">
+              <span class="extras-bullet"></span>
+              Malayalam
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER / CONTACT -->
+  <footer class="footer" id="contact">
+    <div class="container">
+      <div class="footer-content">
+        <h2 class="footer-heading reveal">Let's connect.</h2>
+        <p class="footer-subtext reveal reveal-delay-1">
+          Open to opportunities, collaborations, and conversations.
+        </p>
+        <div class="footer-links reveal reveal-delay-2">
+          <!-- Email -->
+          <button class="footer-link" id="email-btn" aria-label="Email" title="Show email">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+            </svg>
+          </button>
+          <!-- GitHub -->
+          <a href="https://github.com/reignofoptimus" target="_blank" rel="noopener noreferrer" class="footer-link" aria-label="GitHub">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.009-.866-.013-1.7-2.782.604-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.463-1.11-1.463-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.092-.646.35-1.086.636-1.336-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0112 6.836c.85.004 1.705.114 2.504.336 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.163 22 16.418 22 12c0-5.523-4.477-10-10-10z"/>
+            </svg>
+          </a>
+          <!-- LinkedIn -->
+          <a href="https://linkedin.com/in/nirmal-madhu-523642361" target="_blank" rel="noopener noreferrer" class="footer-link" aria-label="LinkedIn">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+            </svg>
+          </a>
+          <!-- Instagram -->
+          <a href="https://instagram.com/iamnirmalmadhu" target="_blank" rel="noopener noreferrer" class="footer-link" aria-label="Instagram">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/>
+            </svg>
+          </a>
+        </div>
+        <div class="footer-bottom">
+          <p>Nirmal Madhu 2026</p>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- EMAIL MODAL -->
+  <div class="email-modal-overlay" id="email-modal">
+    <div class="email-modal">
+      <button class="email-modal-close" id="email-modal-close" aria-label="Close">&times;</button>
+      <div class="email-modal-icon">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" width="32" height="32">
+          <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+        </svg>
+      </div>
+      <p class="email-modal-label">Reach me at</p>
+      <p class="email-modal-address" id="email-address">nirmalmadhu2005@gmail.com</p>
+      <button class="email-modal-copy" id="email-copy">Copy to clipboard</button>
+    </div>
+  </div>
+
+  <!-- SCROLL 3D FLOATING SHAPES -->
+  <div class="scroll-shapes" aria-hidden="true">
+    <div class="floating-shape shape-1"></div>
+    <div class="floating-shape shape-2"></div>
+    <div class="floating-shape shape-3"></div>
+    <div class="floating-shape shape-4"></div>
+    <div class="floating-shape shape-5"></div>
+    <div class="floating-shape shape-6"></div>
+  </div>
+
+  <!-- LIQUID GLASS SVG FILTER -->
+  <svg style="display: none;" aria-hidden="true">
+    <defs>
+      <filter
+        id="container-glass"
+        x="0%"
+        y="0%"
+        width="100%"
+        height="100%"
+        color-interpolation-filters="sRGB"
+      >
+        <feTurbulence
+          type="fractalNoise"
+          baseFrequency="0.05 0.05"
+          numOctaves="1"
+          seed="1"
+          result="turbulence"
+        />
+        <feGaussianBlur in="turbulence" stdDeviation="2" result="blurredNoise" />
+        <feDisplacementMap
+          in="SourceGraphic"
+          in2="blurredNoise"
+          scale="70"
+          xChannelSelector="R"
+          yChannelSelector="B"
+          result="displaced"
+        />
+        <feGaussianBlur in="displaced" stdDeviation="4" result="finalBlur" />
+        <feComposite in="finalBlur" in2="finalBlur" operator="over" />
+      </filter>
+    </defs>
+  </svg>
+
+  <!-- SCRIPTS -->
+  <script src="scripts/lenis.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
