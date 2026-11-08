@@ -157,10 +157,7 @@
 
     const resolutionLocation = gl.getUniformLocation(program, 'u_resolution');
     const timeLocation = gl.getUniformLocation(program, 'u_time');
-    const themeLocation = gl.getUniformLocation(program, 'u_theme');
 
-    let currentTheme = htmlEl.getAttribute('data-theme') === 'light' ? 0.0 : 1.0;
-    let targetTheme = currentTheme;
 
     function resize() {
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -198,16 +195,12 @@
         return;
       }
 
-      // Smooth theme transitions
-      targetTheme = htmlEl.getAttribute('data-theme') === 'light' ? 0.0 : 1.0;
-      currentTheme += (targetTheme - currentTheme) * 0.1;
 
       const elapsed = (now - startTime) / 1000.0;
       lastElapsed = elapsed;
 
       gl.uniform2f(resolutionLocation, canvas.width, canvas.height);
       gl.uniform1f(timeLocation, elapsed);
-      gl.uniform1f(themeLocation, currentTheme);
 
       gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
 
@@ -228,239 +221,6 @@
     }, false);
   }
 
-  // ——————————————————————————————————————————————
-  // 2. APPLE-STYLE LIQUID GLASS THEME SWITCH (Native Spring Physics)
-  // ——————————————————————————————————————————————
-
-  function initAppleSwitch() {
-    const switchBtn = document.getElementById('theme-toggle');
-    if (!switchBtn) return;
-
-    const glowEl = switchBtn.querySelector('.apple-switch-glow');
-    const trackOnEl = switchBtn.querySelector('.apple-switch-track-on');
-    const liquidEl = switchBtn.querySelector('.apple-switch-liquid');
-    const thumbEl = switchBtn.querySelector('.apple-switch-thumb');
-
-    // Metrics matching AppleSwitch React component
-    const metrics = {
-      trackX: 60,
-      trackY: 30,
-      thumbX: 30,
-      thumbY: 22,
-      padding: 4,
-    };
-
-    const thumbTravel = metrics.trackX - metrics.thumbX - metrics.padding * 2; // 22px
-
-    const savedTheme = localStorage.getItem('portfolio-theme') || 'dark';
-    htmlEl.setAttribute('data-theme', savedTheme);
-    let isChecked = savedTheme === 'dark';
-
-    // State variables for physics
-    let targetX = isChecked ? thumbTravel : 0;
-    let currentX = targetX;
-    let velX = 0;
-
-    let targetGrab = 0;
-    let currentGrab = 0;
-    let velGrab = 0;
-
-    // Spring constants matching React component:
-    // thumbSpring: { stiffness: 700, damping: 48, mass: 0.55 }
-    const kThumb = 700;
-    const dThumb = 48;
-    const mThumb = 0.55;
-
-    // grabSpring: { stiffness: 500, damping: 25 }
-    const kGrab = 500;
-    const dGrab = 25;
-    const mGrab = 1.0;
-
-    let isDragging = false;
-    let activePointerId = null;
-    let dragStartX = 0;
-    let dragStartThumbX = 0;
-    let suppressNextClick = false;
-    let isAnimating = false;
-
-    function updateVisuals() {
-      const extraWidth = currentGrab * (metrics.padding * 4.5);
-      const extraHeight = currentGrab * (metrics.padding * 2.3);
-
-      const w = metrics.thumbX + extraWidth;
-      const h = metrics.thumbY + extraHeight;
-      const offsetLeft = metrics.padding + currentX - extraWidth / 2;
-
-      if (thumbEl) {
-        thumbEl.style.width = w + 'px';
-        thumbEl.style.height = h + 'px';
-        thumbEl.style.transform = `translate3d(${offsetLeft}px, -50%, 0)`;
-        thumbEl.style.opacity = String(1 - currentGrab * 0.35);
-      }
-
-      if (liquidEl) {
-        const liquidScale = 0.82 + currentGrab * 0.26;
-        liquidEl.style.width = w + 'px';
-        liquidEl.style.height = h + 'px';
-        liquidEl.style.transform = `translate3d(${offsetLeft}px, -50%, 0) scale(${liquidScale})`;
-        liquidEl.style.opacity = String(currentGrab * 0.76);
-      }
-
-      const progress = Math.max(0, Math.min(1, currentX / thumbTravel));
-      if (trackOnEl) {
-        trackOnEl.style.opacity = String(progress);
-      }
-
-      if (glowEl) {
-        glowEl.style.opacity = String(progress * 0.22);
-        glowEl.style.transform = `scale(${0.85 + progress * 0.15})`;
-      }
-    }
-
-    function tickSprings(dt) {
-      const fThumb = -kThumb * (currentX - targetX) - dThumb * velX;
-      const aThumb = fThumb / mThumb;
-      velX += aThumb * dt;
-      currentX += velX * dt;
-
-      const fGrab = -kGrab * (currentGrab - targetGrab) - dGrab * velGrab;
-      const aGrab = fGrab / mGrab;
-      velGrab += aGrab * dt;
-      currentGrab += velGrab * dt;
-
-      currentGrab = Math.max(0, Math.min(1, currentGrab));
-
-      const settledThumb = Math.abs(currentX - targetX) < 0.1 && Math.abs(velX) < 0.1;
-      const settledGrab = Math.abs(currentGrab - targetGrab) < 0.005 && Math.abs(velGrab) < 0.005;
-
-      if (settledThumb && settledGrab && !isDragging) {
-        currentX = targetX;
-        velX = 0;
-        currentGrab = targetGrab;
-        velGrab = 0;
-        updateVisuals();
-        isAnimating = false;
-        return;
-      }
-
-      updateVisuals();
-      requestAnimationFrame(loop);
-    }
-
-    let lastTime = performance.now();
-    function loop(now) {
-      if (!isAnimating) return;
-      const dt = Math.min((now - lastTime) / 1000, 0.033);
-      lastTime = now;
-      tickSprings(dt);
-    }
-
-    function startAnimation() {
-      if (!isAnimating) {
-        isAnimating = true;
-        lastTime = performance.now();
-        requestAnimationFrame(loop);
-      }
-    }
-
-    function setChecked(next, animate = true) {
-      isChecked = next;
-      const newTheme = isChecked ? 'dark' : 'light';
-      htmlEl.setAttribute('data-theme', newTheme);
-      localStorage.setItem('portfolio-theme', newTheme);
-      switchBtn.setAttribute('aria-checked', String(isChecked));
-
-      targetX = isChecked ? thumbTravel : 0;
-      if (animate) {
-        startAnimation();
-      } else {
-        currentX = targetX;
-        velX = 0;
-        updateVisuals();
-      }
-
-      window.dispatchEvent(new CustomEvent('themechange', { detail: { theme: newTheme } }));
-    }
-
-    switchBtn.addEventListener('pointerdown', (e) => {
-      if (e.pointerType === 'mouse' && e.button !== 0) return;
-      switchBtn.setPointerCapture(e.pointerId);
-      activePointerId = e.pointerId;
-      targetGrab = 1;
-      dragStartX = e.clientX;
-      dragStartThumbX = currentX;
-      targetX = dragStartThumbX;
-      isDragging = false;
-      startAnimation();
-    });
-
-    switchBtn.addEventListener('pointermove', (e) => {
-      if (activePointerId === null || e.pointerId !== activePointerId) return;
-      const deltaX = e.clientX - dragStartX;
-      if (Math.abs(deltaX) > 3) {
-        isDragging = true;
-      }
-      if (!isDragging) return;
-      e.preventDefault();
-      const nextX = Math.max(0, Math.min(thumbTravel, dragStartThumbX + deltaX));
-      targetX = nextX;
-      currentX = nextX;
-      velX = 0;
-      startAnimation();
-    });
-
-    switchBtn.addEventListener('pointerup', (e) => {
-      if (activePointerId === null || e.pointerId !== activePointerId) return;
-      if (switchBtn.hasPointerCapture(e.pointerId)) {
-        switchBtn.releasePointerCapture(e.pointerId);
-      }
-      activePointerId = null;
-      targetGrab = 0;
-
-      if (isDragging) {
-        isDragging = false;
-        suppressNextClick = true;
-        setChecked(currentX >= thumbTravel / 2);
-      }
-      startAnimation();
-    });
-
-    switchBtn.addEventListener('pointercancel', () => {
-      activePointerId = null;
-      isDragging = false;
-      targetGrab = 0;
-      targetX = isChecked ? thumbTravel : 0;
-      startAnimation();
-    });
-
-    switchBtn.addEventListener('click', (e) => {
-      if (suppressNextClick) {
-        suppressNextClick = false;
-        e.preventDefault();
-        return;
-      }
-      setChecked(!isChecked);
-    });
-
-    window.addEventListener('pointerup', () => {
-      if (activePointerId !== null) {
-        activePointerId = null;
-        targetGrab = 0;
-        if (isDragging) {
-          isDragging = false;
-          suppressNextClick = true;
-          setChecked(currentX >= thumbTravel / 2);
-        }
-        startAnimation();
-      }
-    });
-
-    // Initial state setup
-    currentX = isChecked ? thumbTravel : 0;
-    targetX = currentX;
-    switchBtn.setAttribute('aria-checked', String(isChecked));
-    updateVisuals();
-  }
 
   // ——————————————————————————————————————————————
   // 3. HERO ANIMATION
@@ -866,7 +626,6 @@
   // ——————————————————————————————————————————————
 
   document.addEventListener('DOMContentLoaded', () => {
-    initAppleSwitch();
     initLenis();
     initFlowField();
     initFluidMenu();

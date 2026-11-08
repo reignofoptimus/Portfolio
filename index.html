@@ -6,12 +6,7 @@
   <title>Nirmal Madhu — Developer & Designer</title>
   <meta name="description" content="Portfolio of Nirmal Madhu — B.Tech Computer Science & Design student, full-stack developer, and AI systems builder." />
   <script>
-    (function() {
-      try {
-        const theme = localStorage.getItem('portfolio-theme') || 'dark';
-        document.documentElement.setAttribute('data-theme', theme);
-      } catch (e) {}
-    })();
+    document.documentElement.setAttribute('data-theme', 'dark');
   </script>
   <link rel="stylesheet" href="style.css" />
 </head>
@@ -73,23 +68,6 @@
           </div>
         </div>
       </div>
-
-      <!-- THEME TOGGLE (Top right) -->
-      <button class="apple-switch" id="theme-toggle" role="switch" aria-checked="true" aria-label="Toggle theme">
-        <span class="apple-switch-glow"></span>
-        <span class="apple-switch-track">
-          <span class="apple-switch-track-off">
-            <span class="apple-switch-icon sun" aria-hidden="true">☀</span>
-          </span>
-          <span class="apple-switch-track-on">
-            <span class="apple-switch-icon moon" aria-hidden="true">☽</span>
-          </span>
-        </span>
-        <span class="apple-switch-liquid"></span>
-        <span class="apple-switch-thumb">
-          <span class="apple-switch-thumb-specular"></span>
-        </span>
-      </button>
     </div>
   </nav>
 
@@ -440,10 +418,7 @@
   <footer class="footer" id="contact">
     <div class="container">
       <div class="footer-content">
-        <h2 class="footer-heading reveal">Let's connect.</h2>
-        <p class="footer-subtext reveal reveal-delay-1">
-          Open to opportunities, collaborations, and conversations.
-        </p>
+        <h2 class="footer-heading reveal">Let's talk.</h2>
         <div class="footer-links reveal reveal-delay-2">
           <!-- Email -->
           <button class="footer-link" id="email-btn" aria-label="Email" title="Show email">
